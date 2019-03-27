@@ -1,0 +1,122 @@
+/******************************************************************************\
+FILE:           operationspan.zp
+AUTHOR:         Maarten 
+
+EXPERIMENT:     A modification of a digitspan test.
+
+DESCRIPTION:
+
+Memory span test to measure the longest list of digits that a 
+participant can recall after presentation. The participant is visually 
+presented a list of digits (one more for each trial). The participant's
+task is to type in the digits he/she saw in presented order.
+There are a configured number of digit sequences per set and if more
+the faults exceed the configured threshold the test is aborted. The
+number of faults is reset at each new set. The script can be configured 
+in modules/configuration.zm. By default the digit arrays are generated 
+pseudo-randomly.
+
+Output: two tables.
+* Table 1: highest span, direction of recall.
+* Table 2: details trail specifics (i.e. digits, answers etc).
+
+
+Global structure of experiment:
+
+  - welcome
+
+  - instructions
+
+  - practice phase (... trials)
+      trial
+
+  - pause
+
+  - test phase (... trials)
+      trial
+  
+  - second round of instructions (if setup)
+  
+  - second practice phase (if setup)
+  
+  - test phase (... trials)
+      trial      
+
+  - thankyou
+
+
+HISTORY:
+2019-03-27 TV   Created.
+
+\******************************************************************************/
+
+requires 1.16;
+
+import std_windows1;
+import std_entry_page1;
+import std_exit_page1;
+import std_pause_page;
+import std_blank_page;
+import std_texts_nl;
+
+import test::task;
+
+import grouping;
+
+Experiment experiment
+{
+    on_event:entry()
+    {	
+		show_test_windows();
+    }
+    
+    on_event:message()
+    {
+        // On Ctrl+F4 jump unconditionally to the thank-you part.
+        if (message_sender == control && message_arg == SYS_STOP)
+        {
+            control.mark_experiment_aborted();
+            thankyou.enter();
+        }
+    }
+
+    Part welcome
+    {
+        on_event:entry()
+        {
+            entry_page.set_text(WELCOME_TEXT);
+            entry_page.action(this, 0s);
+        }
+    }
+
+    Part blank1
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 1s);
+        }
+    }
+
+//    Part test
+//    {
+//    }
+    
+    Part blank2
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 1s);
+        }
+    }
+	
+    Part thankyou
+    {
+        on_event:entry()
+        {
+			control.end_experiment();   // Check-in session.
+			
+			exit_page.set_text(THANK_YOU_TEXT);
+			exit_page.action(this, 5s);
+        }
+    }
+}
