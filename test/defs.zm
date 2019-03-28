@@ -12,3 +12,15 @@ bool SHUFFLE_PRAC_ITEMS = false;
 //
 // You can set the duration for all those parts here.
 dur BLANK_DURATION  = 250ms;
+
+// Whether or not the participant gets feedback
+const bool DISPLAY_FEEDBACK   = false;
+
+// Whether or not the participants sees a prompt with what to do.
+const bool DISPLAY_PROMPT     = false;
+
+// The time between the end and start of a trial.
+dur INTERTRIAL_INTERVAL = 100ms;
+
+// The duration that the response is active
+dur RESPONSE_DURATION = -1s;

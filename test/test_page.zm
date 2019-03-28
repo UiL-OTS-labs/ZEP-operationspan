@@ -1,0 +1,548 @@
+/******************************************************************************\
+FILE:           test_page.zm
+AUTHOR:         Theo Veenker (UiL-OTS) <T.J.G.Veenker@uu.nl>
+ADAPTED BY:     Chris van Run
+
+DESCRIPTION:
+
+Provides a page object to show to the participant during test phase trials.
+It handles presenting the stimulus and recording the participant's response.
+
+
+HISTORY:
+2012-03-20 TV   Created.
+2014-05-26 CvR	Adapated.
+2019-03-28 MD   Adapted.
+
+\******************************************************************************/
+
+import std_sound_output_device;
+import defs;
+
+Page test_page
+{
+    TestItem    item;           // trial control parameters
+	int digit_nr  = 0;
+
+    init()
+    {
+        fill_pattern_color = TEST_PAGE_COLOR;
+    }
+
+
+    on_event:key_press()
+    {
+        handle_special_key(this, input_key, input_modifiers);
+    }
+
+
+    VerticalLayout layout
+    {
+        init()
+        {
+            spacing = 50;
+            height = 0;     // 0 means as large as possible
+        }
+
+        CanvasGadget canvas 
+        {
+            on_event:init()
+            {
+                fill_pattern_color  = TEST_PAGE_STIMULUS_COLOR;
+                size                = 600, 100;
+            }
+
+            TextShape tshape
+            {
+                on_event:init()
+                {
+                    font_family         = TEST_PAGE_STIMULUS_FONT_FAMILY;
+                    font_size           = TEST_PAGE_STIMULUS_FONT_SIZE;
+                    line_pattern_color  = TEST_PAGE_STIMULUS_TEXT_COLOR;
+                }
+            }
+
+            void action(time t, string stim_text)
+            {
+                tshape.text = stim_text;
+                tshape.start(t);
+            }
+        }
+
+		SoundChain stimulus_audio
+		{
+			 // Sound source/producer object.
+			SoundFile clip {}
+			// Sound sink/consumer object.
+			SoundPlayback playback {}
+
+            time play(time t, string digit)
+            {
+				string sndfn = digit + ".wav";
+				stimulus_audio.clip.file = stimuli_dir() + "sounds/" +  sndfn;
+				stimulus_audio.playback.device = sound_output_device;
+				stimulus_audio.start();
+                return stimulus_audio.expected_start_time;
+            }
+		}
+
+		time start_stimuli(time tref)
+        {
+            // Start stimulus.
+            // stimulus_visual.start(tref);
+            //TODO change "1".
+            time onset = stimulus_audio.play(tref, "1");
+
+            // Return stimulus offset time.
+            return onset;
+        }
+
+        TextFieldGadget input
+        {
+            init()
+            {
+                font_family = TEST_PAGE_INPUT_FONT_FAMILY;
+                font_size = TEST_PAGE_INPUT_FONT_SIZE;
+                fill_pattern_color = TEST_PAGE_INPUT_COLOR;
+                text_color = TEST_PAGE_INPUT_TEXT_COLOR;
+                width_en = 20;
+                is_visible = false;
+            }
+
+            on_event:enter()
+            {
+                // Only accept when characters have been entered.
+                if (text != "")
+                    response.process_hit(text, event_time);
+            }
+        }
+
+        HorizontalLayout buttons
+        {
+            init()
+            {
+                spacing = 5;
+                //options = LAYOUT_EQUAL_WIDTH;
+                is_visible = false;
+            }
+
+
+            ButtonGadget button1
+            {
+                init()
+                {
+                    text = "1";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "1");
+                }
+            }
+
+            ButtonGadget button2
+            {
+                init()
+                {
+                    text = "2";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "2");
+                }
+            }
+
+            ButtonGadget button3
+            {
+                init()
+                {
+                    text = "3";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "3");
+                }
+            }
+
+            ButtonGadget button4
+            {
+                init()
+                {
+                    text = "4";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "4");
+                }
+            }
+
+            ButtonGadget button5
+            {
+                init()
+                {
+                    text = "5";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "5");
+                }
+            }
+
+            ButtonGadget button6
+            {
+                init()
+                {
+                    text = "6";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "6");
+                }
+            }
+
+            ButtonGadget button7
+            {
+                init()
+                {
+                    text = "7";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "7");
+                }
+            }
+
+            ButtonGadget button8
+            {
+                init()
+                {
+                    text = "8";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "8");
+                }
+            }
+
+            ButtonGadget button9
+            {
+                init()
+                {
+                    text = "9";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "9");
+                }
+            }
+
+            ButtonGadget button0
+            {
+                init()
+                {
+                    text = "0";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(input.text + "0");
+                }
+            }
+
+            ButtonGadget button_bs
+            {
+                init()
+                {
+                    text = "BACKSPACE";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 180, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    input.set_text(substring(input.text, 0, length(input.text) - 1));
+                }
+            }
+
+            ButtonGadget button_enter
+            {
+                init()
+                {
+                    text = "OK";
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 75, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    if (text != "")
+                        response.process_hit(input.text, event_time);
+                }
+            }
+        }
+
+        void reset()
+        {
+            full_abort();
+
+            input.text = "";
+        }
+    }
+
+
+    Response response
+    {
+        // Response data.
+        string  value;          // value: entered text
+        int     rt;             // response time [ms]
+        int     correct;        // correct response: 0=no, 1=yes, -1=n.a.
+
+
+        void clear()
+        {
+            value = "";
+            rt = -9999;
+            correct = -1;
+        }
+
+
+        void process_hit(string val, time t)
+        {
+            HitType validity = hit(t);
+
+            // Accept the first hit in the response interval and end the
+            // response interval.
+            if (is_valid_value(val) && validity == HIT_VALID)
+            {
+                value = val;
+                rt = int(reaction_time(0));
+                correct = is_correct_value(val);
+
+                ignore_remaining_hits();
+
+                stop();
+            }
+            else if (validity == HIT_TOO_EARLY || validity == HIT_TOO_LATE)
+            {
+                // False alarm. Deal with this if desired.
+            }
+        }
+
+
+        // Checks if ststimulusring contains one or more digits.
+        bool is_valid_value(string s)
+        {
+            bool ok = false;
+            int slen = length(s);
+            int n;
+            while (n < slen)
+            {
+                char c = character(s, n);
+                if (c >= '0' && c <= '9')
+                {
+                    ok = true;
+                    break;
+                }
+                n++;
+            }
+
+            return ok;
+        }
+
+
+        // Check if digits in s match g_digits.
+        bool is_correct_value(string s)
+        {
+            int i = 0;
+            if (length(s) != item.n)
+                return false;
+
+            if (item.n >= g_digits.size) {
+                print_error("warning: test items with more then 10 digits\n");
+                return false;
+            }
+
+            while (i < length(s) && i < g_digits.size)
+            {
+                if (substring(s, i, 1) != g_digits[i])
+                    return false;
+                i++;
+            }
+
+            return true;
+        }
+
+        on_event:start()
+        {
+            layout.input.is_visible = true;
+            layout.buttons.is_visible = true;
+        }
+
+        on_event:finish()
+        {
+            layout.input.is_visible = false;
+            layout.buttons.is_visible = false;
+
+            real correctness = 0;
+            if (num_valid_hits > 0) correctness = correct ? 1 : -1;
+
+            done(CONTINUE);
+        }
+
+        on_event:message()
+        {
+            done(CONTINUE);
+        }
+    }
+
+
+    // Aborts any ongoing activity on this page and signals the initiator
+    // of the trial that we're done.
+    void done(int msgid)
+    {
+        // Just in case; abort presentation if still active.
+        layout.reset();
+
+        signal_target(msgid);   // tell caller we're done
+        target = null;
+
+        control.clear_status();
+    }
+
+
+    //==========================================================================
+
+
+    // Performs preparatory work required before using this page.
+    void setup(
+        int ntrials = -1,
+        bool fb = false,
+        bool pr = false,
+        string overlay_text = "type in digits in given order"
+        )
+    {
+        test_page_overlay.setup(this);
+        // Show or hide prompt.
+        test_page_overlay.show_prompt(pr ?
+             overlay_text : "");
+
+        // Enable or disable the progress bar.
+        test_page_overlay.show_progress_bar(ntrials);   // disabled if < 0
+
+        // Enable or disable feedback.
+        test_page_overlay.enable_feedback(fb);          // disabled if false
+    }
+
+
+    // Performs cleaning up if necessary.
+    void cleanup()
+    {
+        test_page_overlay.cleanup();
+    }
+
+
+    // Starts a trial.
+    void action(Object caller, TestItem it, time tref, int count=-1)
+    {
+        // Save passed trial control parameters.
+        item        = it;
+
+        // Show this page (if not yet done) and make tref the trial start time.
+        tref = test_window1.show_test_page(this, tref + INTERTRIAL_INTERVAL);
+
+        // Reset response data.
+        response.clear();
+
+        // Start stimulus.Layout
+        time stimoffset = layout.start_stimuli(tref);
+
+        // Response interval starts at stimulus offset + STIM_RESP_INTERVAL.
+        // Timeout after RESPONSE_DURATION unless this duration is 0s or less.
+        response.start(stimoffset, RESPONSE_DURATION);
+
+        // Update progress counter (if enabled).
+        test_page_overlay.update_progress_bar(count);
+
+        // Update status line on control window. Cleared in done() above.
+        control.set_status(string(count));
+
+        // Remember who to signal when the trial is over.
+        target = caller;
+    }
+}

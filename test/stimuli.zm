@@ -1,4 +1,6 @@
 
+string[..] g_digits = {"0","1","2","3","4","5","6","7","8","9"};
+
 // the stimuli
 record TestItem {
     int n;          // Number of digits to recall.
@@ -25,7 +27,8 @@ record TestItem {
 };
 
 TestItem[..] prac_items = {
-    {    2,
+    {
+        2,
         "1 + 2 = 3", true,
         "1 + 2 = 6", false,
         "", true,
@@ -37,7 +40,8 @@ TestItem[..] prac_items = {
         "", true,
         "", true,
     },
-    {    3,
+    {
+        3,
         "5 + 2 = 7", true,
         "7 + 2 = 9", false,
         "8 - 3 = 5", true,
@@ -55,7 +59,8 @@ TestItem[..] prac_items = {
  * the test_items
  */
 TestItem[..] test_items = {
-    {    2,
+    {
+        2,
         "1 + 2 = 3", true,
         "1 + 2 = 6", false,
         "", true,
@@ -67,7 +72,8 @@ TestItem[..] test_items = {
         "", true,
         "", true,
     },
-    {    3,
+    {
+        3,
         "5 + 2 = 7", true,
         "7 + 2 = 9", false,
         "8 - 3 = 5", true,

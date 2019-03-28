@@ -3,7 +3,7 @@ import test_page;
 import defs;
 import shuffle;
 import instructions;
-
+import test_page;
 
 Block test
 {
@@ -48,9 +48,27 @@ Block test
         }
     }
 
-//    Block practice_trials
-//    {
-//    }
+    Block practice
+    {
+        on_event:entry()
+        {
+            // test_page.setup();
+        }
+
+        on_event:exit()
+        {
+            // save data
+        }
+
+        Trial
+        {
+            on_event:entry()
+            {
+                TestItem item = prac_items[practice.cycle];
+                test_page.action(this, item, reference_time);
+            }
+        }
+    }
 
     Part 
     {
