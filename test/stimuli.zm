@@ -1,0 +1,83 @@
+
+// the stimuli
+record TestItem {
+    int n;          // Number of digits to recall.
+    string op1;     // operation 1
+    bool   ans1;    // answer 1
+    string op2;     // operation n
+    bool   ans2;    // answer n
+    string op3;
+    bool   ans3;
+    string op4;
+    bool   ans4;
+    string op5;
+    bool   ans5;
+    string op6;
+    bool   ans6;
+    string op7;
+    bool   ans7;
+    string op8;
+    bool   ans8;
+    string op9;
+    bool   ans9;
+    string op10;
+    bool   ans10;
+};
+
+TestItem[..] prac_items = {
+    {    2,
+        "1 + 2 = 3", true,
+        "1 + 2 = 6", false,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+    },
+    {    3,
+        "5 + 2 = 7", true,
+        "7 + 2 = 9", false,
+        "8 - 3 = 5", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+    }
+};
+
+/**
+ * the test_items
+ */
+TestItem[..] test_items = {
+    {    2,
+        "1 + 2 = 3", true,
+        "1 + 2 = 6", false,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+    },
+    {    3,
+        "5 + 2 = 7", true,
+        "7 + 2 = 9", false,
+        "8 - 3 = 5", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+        "", true,
+    }
+};
+

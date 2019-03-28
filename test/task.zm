@@ -1,4 +1,36 @@
 
 import test_page;
+import defs;
+import shuffle;
 
 
+Block test
+{
+    on_event:entry()
+    {
+        if (SHUFFLE_PRAC_ITEMS)
+        {
+            if (shuffle_test_items(prac_items) != OK)
+            {
+                terminate;
+            }
+        }
+        if (SHUFFLE_TEST_ITEMS)
+        {
+            if (shuffle_test_items(test_items) != OK)
+            {
+                terminate;
+            }
+        }
+    }
+
+//    Block practice
+//    {
+//    }
+}
+
+void start (Part caller)
+{
+    // The test block needs to notify the caller when it is ready.
+    test.enter(caller);
+}

@@ -1,0 +1,8 @@
+
+// If true shuffles the test items. This means that the number of items to
+// be recalled isn't increasing, but shuffled.
+bool SHUFFLE_TEST_ITEMS = false;
+
+// see shuffling of test items, but then for the practice items
+bool SHUFFLE_PRAC_ITEMS = false;
+
