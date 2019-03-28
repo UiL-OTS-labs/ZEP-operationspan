@@ -1,0 +1,18 @@
+
+
+string PRAC_INSTRUCTION =
+   M"<b>Beste deelnemer,</b>\n"
+    "\n"
+    "Dit is de instructie die hoort bij het <i>oefen</i> gedeelte.\n"
+    "\n"
+    "Veel succes!"
+    ;
+    
+string TEST_INSTRUCTION =
+   M"<b>Beste deelnemer,</b>\n"
+    "\n"
+    "Dit is de instructie die hoort bij het <i>test</i> gedeelte.\n"
+    "\n"
+    "Veel succes!"
+    ;
+

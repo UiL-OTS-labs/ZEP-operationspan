@@ -89,26 +89,14 @@ Experiment experiment
         }
     }
 
-    Part blank1
+    Part test
     {
         on_event:entry()
         {
-            blank_page.action_auto(this, 1s);
+            test::action(this);
         }
     }
-
-//    Part test
-//    {
-//    }
     
-    Part blank2
-    {
-        on_event:entry()
-        {
-            blank_page.action_auto(this, 1s);
-        }
-    }
-	
     Part thankyou
     {
         on_event:entry()

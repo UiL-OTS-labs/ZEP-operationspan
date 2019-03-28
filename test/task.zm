@@ -2,6 +2,7 @@
 import test_page;
 import defs;
 import shuffle;
+import instructions;
 
 
 Block test
@@ -11,25 +12,86 @@ Block test
         if (SHUFFLE_PRAC_ITEMS)
         {
             if (shuffle_test_items(prac_items) != OK)
-            {
                 terminate;
-            }
         }
         if (SHUFFLE_TEST_ITEMS)
         {
             if (shuffle_test_items(test_items) != OK)
-            {
                 terminate;
-            }
         }
     }
 
-//    Block practice
+    Part 
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, BLANK_DURATION);
+        }
+    }
+
+    Part practice_instructions
+    {
+        on_event:entry()
+        {
+            pause_page.set_text(PRAC_INSTRUCTION, true);
+            pause_page.action(this);
+            control.button_box.enable_all_buttons(CONTINUE);
+        }
+    }
+
+
+    Part 
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, BLANK_DURATION);
+        }
+    }
+
+//    Block practice_trials
 //    {
 //    }
+
+    Part 
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, BLANK_DURATION);
+        }
+    }
+    
+    Part test_instructions
+    {
+        on_event:entry()
+        {
+            pause_page.set_text(TEST_INSTRUCTION, true);
+            pause_page.action(this);
+            control.button_box.enable_all_buttons(CONTINUE);
+        }
+    }
+    
+    Part 
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, BLANK_DURATION);
+        }
+    }
+
+//    Block test_trials
+//    {
+//    }
+
+    Part 
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, BLANK_DURATION);
+        }
+    }
 }
 
-void start (Part caller)
+void action (Part caller)
 {
     // The test block needs to notify the caller when it is ready.
     test.enter(caller);

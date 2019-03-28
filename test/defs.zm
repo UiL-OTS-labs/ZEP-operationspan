@@ -6,3 +6,9 @@ bool SHUFFLE_TEST_ITEMS = false;
 // see shuffling of test items, but then for the practice items
 bool SHUFFLE_PRAC_ITEMS = false;
 
+// Between the different parts in the experiment is a small grayish page
+// that is a transition between the welcome text, and the instructions,
+// the instructions and the task etc.
+//
+// You can set the duration for all those parts here.
+dur BLANK_DURATION  = 250ms;
