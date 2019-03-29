@@ -19,29 +19,121 @@ HISTORY:
 import std_sound_output_device;
 import defs;
 
+
 Page test_page
 {
-    TestItem    item;           // trial control parameters
+    TestItem    item;               // Trial control parameters.
 	int digit_nr  = 0;
 
-    init()
+    string[..] current_digits;      // Digits in order of current trial.
+    string current_operation;       // The current operation.
+    bool   current_operation_correct; // Whether or not the current op is correct
+
+
+    void prepare_digits()
+    {
+        digit_nr = 0;
+        g_digits.shuffle(0, -1);
+        current_digits.size = item.n;
+        int i = 0;
+        while (i < current_digits.size)
+        {
+            current_digits[i] = g_digits[i];
+            i++;
+        }
+    }
+
+    string get_item()
+    {
+        int i;
+        string output = "";
+        if (current_digits.size == 0) {
+            print_error("Oops current digits.size == 0.\n");
+            return output;
+        }
+
+        output = current_digits[0];
+        i = 1;
+        while (i < current_digits.size)
+        {
+            current_digits[i-1] = current_digits[i];
+            i++;
+        }
+        current_digits.size = current_digits.size - 1;
+        return output;
+    }
+
+    void get_operation()
+    {
+        if (digit_nr == 0) {
+            current_operation = item.op1;
+            current_operation_correct = item.ans1;
+        }
+        else if (digit_nr == 1) {
+            current_operation= item.op2;
+            current_operation_correct = item.ans2;
+        }
+        else if (digit_nr == 2) {
+            current_operation = item.op3;
+            current_operation_correct = item.ans3;
+        }
+        else if (digit_nr == 3) {
+            current_operation = item.op4;
+            current_operation_correct = item.ans4;
+        }
+        else if (digit_nr == 4) {
+            current_operation = item.op5;
+            current_operation_correct = item.ans5;
+        }
+        else if (digit_nr == 5) {
+            current_operation = item.op6;
+            current_operation_correct = item.ans6;
+        }
+        else if (digit_nr == 6) {
+            current_operation = item.op7;
+            current_operation_correct = item.ans7;
+        }
+        else if (digit_nr == 7) {
+            current_operation = item.op8;
+            current_operation_correct = item.ans8;
+        }
+        else if (digit_nr == 8) {
+            current_operation = item.op9;
+            current_operation_correct = item.ans9;
+        }
+        else if (digit_nr == 9) {
+            current_operation = item.op10;
+            current_operation_correct = item.ans10;
+        }
+        else {
+            // Apparently the task is to easy.
+            current_operation = "-inf + inf = 0";
+            current_operation_correct = false;
+            print_error("The task is currently not build for n = 10\n");
+        }
+    }
+
+    on_event:init()
     {
         fill_pattern_color = TEST_PAGE_COLOR;
     }
 
-
     on_event:key_press()
     {
-        handle_special_key(this, input_key, input_modifiers);
+        if (input_key == KEY_Shift_L)
+            operation_response.process_hit(true, event_time);
+        else if (input_key == KEY_Shift_R)
+            operation_response.process_hit(false, event_time);
+        else
+            handle_special_key(this, input_key, input_modifiers);
     }
-
 
     VerticalLayout layout
     {
         init()
         {
             spacing = 50;
-            height = 0;     // 0 means as large as possible
+            height  = 0;     // 0 means as large as possible
         }
 
         CanvasGadget canvas 
@@ -50,6 +142,8 @@ Page test_page
             {
                 fill_pattern_color  = TEST_PAGE_STIMULUS_COLOR;
                 size                = 600, 100;
+                offset_x            = width/2;
+                offset_y            = height/2;
             }
 
             TextShape tshape
@@ -65,7 +159,16 @@ Page test_page
             void action(time t, string stim_text)
             {
                 tshape.text = stim_text;
+                tshape.offset_x = -tshape.string_width(stim_text, true)/2;
+                tshape.offset_y = -tshape.string_height(stim_text, true)/2;
                 tshape.start(t);
+            }
+
+            void cleanup()
+            {
+                tshape.abort();
+                canvas.full_abort();
+                tshape.is_visible = false;
             }
         }
 
@@ -89,9 +192,15 @@ Page test_page
 		time start_stimuli(time tref)
         {
             // Start stimulus.
-            // stimulus_visual.start(tref);
             //TODO change "1".
-            time onset = stimulus_audio.play(tref, "1");
+            string num = get_item();
+            get_operation();
+            time onset  = stimulus_audio.play(tref, num);
+            time offset = stimulus_audio.expected_finish_time;
+            canvas.action(offset, current_operation);
+            operation_response.start(canvas.tshape.expected_start_time);
+
+            digit_nr++;
 
             // Return stimulus offset time.
             return onset;
@@ -109,11 +218,26 @@ Page test_page
                 is_visible = false;
             }
 
+            on_event:change()
+            {
+                string output = "";
+                char c;
+                int i;
+                while (i < length(text) ) {
+                    c = character(text, i);
+                    if (c >= '0' && c < '9')
+                        output += c;
+                    i++;
+                }
+                println("Changing \"" + text + "\" to \""  + output + "\"" );
+                text = output;
+            }
+
             on_event:enter()
             {
                 // Only accept when characters have been entered.
                 if (text != "")
-                    response.process_hit(text, event_time);
+                    recall_response.process_hit(text, event_time);
             }
         }
 
@@ -122,10 +246,8 @@ Page test_page
             init()
             {
                 spacing = 5;
-                //options = LAYOUT_EQUAL_WIDTH;
                 is_visible = false;
             }
-
 
             ButtonGadget button1
             {
@@ -352,35 +474,149 @@ Page test_page
                 on_event:activate()
                 {
                     if (text != "")
-                        response.process_hit(input.text, event_time);
+                        recall_response.process_hit(input.text, event_time);
                 }
+            }
+        }
+        
+        HorizontalLayout buttons_tf
+        {
+            init()
+            {
+                spacing = 100;
+                is_visible = false;
+                options = LAYOUT_EQUAL_WIDTH;
+            }
+
+            ButtonGadget button_true
+            {
+                init()
+                {
+                    text = TRUE_BUTTON_TEXT;
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 150, 75;
+                }
+
+                on_event:activate()
+                {
+                    if (text != "")
+                        operation_response.process_hit(true, event_time);
+                }
+            }
+            
+            ButtonGadget button_false
+            {
+                init()
+                {
+                    text = FALSE_BUTTON_TEXT;
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 150, 75;
+                }
+
+                on_event:activate()
+                {
+                    if (text != "")
+                        operation_response.process_hit(false, event_time);
+                }
+            }
+
+            void show()
+            {
+                button_true.is_visible = true;
+                button_false.is_visible = true;
+                is_visible = true;
+            }
+
+            void hide()
+            {
+                button_true.is_visible = false;
+                button_false.is_visible = false;
+                is_visible = false;
             }
         }
 
         void reset()
         {
             full_abort();
+            canvas.cleanup();
+            buttons.is_visible = false;
+            buttons_tf.hide();
 
             input.text = "";
         }
     }
 
+    Response operation_response
+    {
+        bool correct_value;
+        bool response;
+        bool correct;
+        int  rt;
 
-    Response response
+        void clear()
+        {
+            rt = -9999;
+            correct = false;
+        }
+
+        // The response values reflects whether the participant thought
+        // the answer was correct.
+        void process_hit(bool response, time t)
+        {
+            HitType validity = hit(t);
+
+            // Accept the first hit in the response interval and end the
+            // response interval.
+            if (validity == HIT_VALID)
+            {
+                rt = int(reaction_time(0));
+                correct = (correct_value == response);
+
+                ignore_remaining_hits();
+
+                stop();
+            }
+            else if (validity == HIT_TOO_EARLY || validity == HIT_TOO_LATE)
+            {
+                // False alarm. Deal with this if desired.
+            }
+        }
+
+        on_event:start()
+        {
+            layout.buttons_tf.show();
+        }
+
+        on_event:finish()
+        {
+            cleanup();
+            if (digit_nr < item.n)
+                // maybe use an ISI instead...
+                layout.start_stimuli(event_time + INTERTRIAL_INTERVAL);
+            else
+                recall_response.start(event_time + INTERTRIAL_INTERVAL);
+        }
+    }
+
+    Response recall_response
     {
         // Response data.
-        string  value;          // value: entered text
-        int     rt;             // response time [ms]
-        int     correct;        // correct response: 0=no, 1=yes, -1=n.a.
-
+        string  value;
+        int     rt;
+        int     correct;
 
         void clear()
         {
             value = "";
             rt = -9999;
-            correct = -1;
+            correct = false;
         }
-
 
         void process_hit(string val, time t)
         {
@@ -404,27 +640,22 @@ Page test_page
             }
         }
 
-
-        // Checks if ststimulusring contains one or more digits.
+        // Checks if the answer contains one or more digits.
         bool is_valid_value(string s)
         {
-            bool ok = false;
             int slen = length(s);
             int n;
             while (n < slen)
             {
                 char c = character(s, n);
                 if (c >= '0' && c <= '9')
-                {
-                    ok = true;
-                    break;
-                }
+                    return true;
+
                 n++;
             }
 
-            return ok;
+            return false;
         }
-
 
         // Check if digits in s match g_digits.
         bool is_correct_value(string s)
@@ -456,17 +687,6 @@ Page test_page
 
         on_event:finish()
         {
-            layout.input.is_visible = false;
-            layout.buttons.is_visible = false;
-
-            real correctness = 0;
-            if (num_valid_hits > 0) correctness = correct ? 1 : -1;
-
-            done(CONTINUE);
-        }
-
-        on_event:message()
-        {
             done(CONTINUE);
         }
     }
@@ -478,6 +698,7 @@ Page test_page
     {
         // Just in case; abort presentation if still active.
         layout.reset();
+        cleanup();
 
         signal_target(msgid);   // tell caller we're done
         target = null;
@@ -514,6 +735,7 @@ Page test_page
     void cleanup()
     {
         test_page_overlay.cleanup();
+        layout.reset();
     }
 
 
@@ -527,14 +749,14 @@ Page test_page
         tref = test_window1.show_test_page(this, tref + INTERTRIAL_INTERVAL);
 
         // Reset response data.
-        response.clear();
+        recall_response.clear();
+        operation_response.clear();
+
+        // Prepares the numbers for the current trial
+        prepare_digits();
 
         // Start stimulus.Layout
         time stimoffset = layout.start_stimuli(tref);
-
-        // Response interval starts at stimulus offset + STIM_RESP_INTERVAL.
-        // Timeout after RESPONSE_DURATION unless this duration is 0s or less.
-        response.start(stimoffset, RESPONSE_DURATION);
 
         // Update progress counter (if enabled).
         test_page_overlay.update_progress_bar(count);
