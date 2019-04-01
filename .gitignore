@@ -6,4 +6,5 @@
 *.swp
 
 # don't track the output of zepdbextract
-./*.csv
+/*.csv
+
