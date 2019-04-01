@@ -1,2 +1,9 @@
+
+# don't track the database folder
 /db
+
+# don't track vim temp files
 *.swp
+
+# don't track the output of zepdbextract
+./*.csv
