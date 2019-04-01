@@ -1,14 +1,28 @@
 
-string[..] g_digits = {"0","1","2","3","4","5","6","7","8","9"};
+string[..] g_digits =
+{
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+};
 
-// the stimuli
+// Describes the stimuli
 record TestItem {
-    int n;          // Number of digits to recall.
+
+    int n;          // Number of digits to recall and operation to perform.
+
     string op1;     // operation 1
     bool   ans1;    // answer 1
     string op2;     // operation n
     bool   ans2;    // answer n
-    string op3;
+    string op3;     
     bool   ans3;
     string op4;
     bool   ans4;
@@ -43,7 +57,7 @@ TestItem[..] prac_items = {
     {
         3,
         "5 + 2 = 7", true,
-        "7 + 2 = 9", false,
+        "7 + 2 = 5", false,
         "8 - 3 = 5", true,
         "", true,
         "", true,
@@ -86,4 +100,15 @@ TestItem[..] test_items = {
         "", true,
     }
 };
+
+void save_stimuli()
+{
+    string fn = stimuli_dir() + "test_items.csv";
+    println("saving test stimuli as: " + fn);
+    test_items.save(fn, "The test items: ");
+
+    fn = stimuli_dir() + "prac_items.csv";
+    println("saving practice stimuli as: " + fn);
+    prac_items.save(fn, "The practice items: ");
+}
 

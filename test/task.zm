@@ -4,6 +4,33 @@ import defs;
 import shuffle;
 import instructions;
 import test_page;
+import output;
+
+// Reads the data stored inside the test page to gather the output for the
+// current trial.
+TestOutput obtain_output()
+{
+    TestOutput out;
+
+    out.n               = test_page.item.n;
+    out.sequence        = test_page.recall_response.desired_value;
+    out.recalled        = test_page.recall_response.entered_value;
+    out.recall_correct  = test_page.recall_response.correct;
+    out.recall_rt       = test_page.recall_response.rt;
+
+    out.op1 = test_page.operation_response.op1;
+    out.op2 = test_page.operation_response.op2;
+    out.op3 = test_page.operation_response.op3;
+    out.op4 = test_page.operation_response.op4;
+    out.op5 = test_page.operation_response.op5;
+    out.op6 = test_page.operation_response.op6;
+    out.op7 = test_page.operation_response.op7;
+    out.op8 = test_page.operation_response.op8;
+    out.op9 = test_page.operation_response.op9;
+    out.op10= test_page.operation_response.op10;
+
+    return out;
+}
 
 Block test
 {
@@ -58,7 +85,7 @@ Block test
 
         on_event:exit()
         {
-            // save data
+            save_prac_output();
         }
 
         Trial
@@ -67,6 +94,12 @@ Block test
             {
                 TestItem item = prac_items[practice.cycle];
                 test_page.action(this, item, reference_time);
+            }
+
+            on_event:exit()
+            {
+                TestOutput out = obtain_output();
+                output_append(prac_output, out);
             }
         }
     }

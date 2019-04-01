@@ -1,0 +1,64 @@
+
+
+record TestOutput
+{
+    /* Number of operations and sequence length. */
+    int n;
+    /* The sequence as presented */
+    string  sequence;
+    /* The sequence as recalled by the participant*/
+    string  recalled;
+    /* Whether the participant recalled the sequence correctly. */
+    bool    recall_correct;
+    /* The time it took to fill out the sequence. */
+    int     recall_rt;
+
+    /* whether or not the operation was answered correctly.
+     *  0 incorrect
+     *  1 correct
+     * -1 irrelevant item < n
+     */
+    int     op1;
+    int     op2;
+    int     op3;
+    int     op4;
+    int     op5;
+    int     op6;
+    int     op7;
+    int     op8;
+    int     op9;
+    int     op10;
+};
+
+/*
+ * Output from the practice phase
+ */
+TestOutput[..] prac_output;
+
+/*
+ * Output from the test phase
+ */
+TestOutput[..] test_output;
+
+
+void output_append(TestOutput[] array, TestOutput output)
+{
+    array.size            = array.size + 1;
+    array[array.size - 1] = output;
+}
+
+void save_prac_output()
+{
+    string fn = expdb.experiment.session.create_table(namespace_name, 1);
+    prac_output.append(fn, namespace_name + "practice results");
+    prac_output.size = 0;
+}
+
+void save_test_output()
+{
+    string fn = expdb.experiment.session.create_table(namespace_name, 2);
+    test_output.append(fn, namespace_name + "test results");
+    test_output.size = 0;
+}
+
+

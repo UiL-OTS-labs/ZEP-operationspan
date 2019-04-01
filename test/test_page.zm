@@ -43,24 +43,17 @@ Page test_page
         }
     }
 
-    string get_item()
+    string presented_digits()
     {
-        int i;
-        string output = "";
-        if (current_digits.size == 0) {
-            print_error("Oops current digits.size == 0.\n");
-            return output;
-        }
-
-        output = current_digits[0];
-        i = 1;
-        while (i < current_digits.size)
+        int    i    = 0;
+        string out  = "";
+        while (i < item.n)
         {
-            current_digits[i-1] = current_digits[i];
+            out += current_digits[i];
             i++;
         }
-        current_digits.size = current_digits.size - 1;
-        return output;
+
+        return out;
     }
 
     void get_operation()
@@ -193,12 +186,16 @@ Page test_page
         {
             // Start stimulus.
             //TODO change "1".
-            string num = get_item();
+            string num = current_digits[digit_nr];
             get_operation();
             time onset  = stimulus_audio.play(tref, num);
             time offset = stimulus_audio.expected_finish_time;
             canvas.action(offset, current_operation);
-            operation_response.start(canvas.tshape.expected_start_time);
+            operation_response.start_response(
+                digit_nr,
+                current_operation_correct,
+                canvas.tshape.expected_start_time
+                );
 
             digit_nr++;
 
@@ -557,12 +554,43 @@ Page test_page
         bool correct_value;
         bool response;
         bool correct;
+        int  op_nr;
         int  rt;
+        int  op1;
+        int  op2;
+        int  op3;
+        int  op4;
+        int  op5;
+        int  op6;
+        int  op7;
+        int  op8;
+        int  op9;
+        int  op10;
 
         void clear()
         {
-            rt = -9999;
+            rt      = -9999;
             correct = false;
+            correct_value = false;
+            op_nr   = -1;
+            op1     = -1;
+            op3     = -1;
+            op3     = -1;
+            op4     = -1;
+            op5     = -1;
+            op6     = -1;
+            op7     = -1;
+            op8     = -1;
+            op9     = -1;
+            op10    = -1;
+        }
+
+        int correctness()
+        {
+            int c = 0;
+            if (correct)
+                c = 1;
+            return c;
         }
 
         // The response values reflects whether the participant thought
@@ -581,6 +609,33 @@ Page test_page
                 ignore_remaining_hits();
 
                 stop();
+
+                if (op_nr == 0)
+                    op1 = correctness();
+                else if (op_nr == 1)
+                    op2 = correctness();
+                else if (op_nr == 2)
+                    op3 = correctness();
+                else if (op_nr == 3)
+                    op4 = correctness();
+                else if (op_nr == 4)
+                    op5 = correctness();
+                else if (op_nr == 5)
+                    op6 = correctness();
+                else if (op_nr == 6)
+                    op7 = correctness();
+                else if (op_nr == 7)
+                    op8 = correctness();
+                else if (op_nr == 8)
+                    op9 = correctness();
+                else if (op_nr == 9)
+                    op10 = correctness();
+                else {
+                    print_error(
+                        "Oops op_nr only valid for 0 <= op_nr < 10 " 
+                        );
+                }
+
             }
             else if (validity == HIT_TOO_EARLY || validity == HIT_TOO_LATE)
             {
@@ -600,22 +655,34 @@ Page test_page
                 // maybe use an ISI instead...
                 layout.start_stimuli(event_time + INTERTRIAL_INTERVAL);
             else
-                recall_response.start(event_time + INTERTRIAL_INTERVAL);
+                recall_response.start_response(
+                    presented_digits(),
+                    event_time + INTERTRIAL_INTERVAL
+                    );
+        }
+
+        void start_response(int op_num, bool correct, time t, dur d=0s)
+        {
+            op_nr = op_num;
+            correct_value = correct;
+            start(t, d);
         }
     }
 
     Response recall_response
     {
         // Response data.
-        string  value;
+        string  entered_value;
+        string  desired_value;
         int     rt;
         int     correct;
 
         void clear()
         {
-            value = "";
-            rt = -9999;
-            correct = false;
+            entered_value   = "";
+            desired_value   = "just something clearly invalid";
+            rt              = -9999;
+            correct         = false;
         }
 
         void process_hit(string val, time t)
@@ -626,9 +693,9 @@ Page test_page
             // response interval.
             if (is_valid_value(val) && validity == HIT_VALID)
             {
-                value = val;
-                rt = int(reaction_time(0));
-                correct = is_correct_value(val);
+                entered_value   = val;
+                rt              = int(reaction_time(0));
+                correct         = entered_value == desired_value;
 
                 ignore_remaining_hits();
 
@@ -657,28 +724,6 @@ Page test_page
             return false;
         }
 
-        // Check if digits in s match g_digits.
-        bool is_correct_value(string s)
-        {
-            int i = 0;
-            if (length(s) != item.n)
-                return false;
-
-            if (item.n >= g_digits.size) {
-                print_error("warning: test items with more then 10 digits\n");
-                return false;
-            }
-
-            while (i < length(s) && i < g_digits.size)
-            {
-                if (substring(s, i, 1) != g_digits[i])
-                    return false;
-                i++;
-            }
-
-            return true;
-        }
-
         on_event:start()
         {
             layout.input.is_visible = true;
@@ -688,6 +733,12 @@ Page test_page
         on_event:finish()
         {
             done(CONTINUE);
+        }
+
+        void start_response(string desired, time t, dur d = 0s) 
+        {
+            desired_value = desired;
+            start(t, d);
         }
     }
 
