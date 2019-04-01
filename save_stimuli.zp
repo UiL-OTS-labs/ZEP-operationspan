@@ -1,0 +1,8 @@
+
+import test::stimuli;
+
+on_event:start()
+{
+    test::save_stimuli();
+    terminate "0";
+}
