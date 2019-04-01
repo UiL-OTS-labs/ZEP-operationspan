@@ -32,7 +32,7 @@ TestOutput obtain_output()
     return out;
 }
 
-Block test
+Block task
 {
     on_event:entry()
     {
@@ -130,9 +130,34 @@ Block test
         }
     }
 
-//    Block test_trials
-//    {
-//    }
+    Block test
+    {
+        on_event:entry()
+        {
+            test_page.setup();
+            num_cycles = test_items.size;
+        }
+
+        on_event:exit()
+        {
+            save_test_output();
+        }
+        
+        Trial
+        {
+            on_event:entry()
+            {
+                TestItem item = test_items[test.cycle];
+                test_page.action(this, item, reference_time);
+            }
+
+            on_event:exit()
+            {
+                TestOutput out = obtain_output();
+                output_append(test_output, out);
+            }
+        }
+    }
 
     Part 
     {
@@ -146,5 +171,6 @@ Block test
 void action (Part caller)
 {
     // The test block needs to notify the caller when it is ready.
-    test.enter(caller);
+    task.enter(caller);
 }
+
