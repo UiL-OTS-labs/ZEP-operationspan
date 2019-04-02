@@ -1,4 +1,6 @@
 
+plugin zep_file;
+
 string[..] g_digits =
 {
     "0",
@@ -104,11 +106,28 @@ TestItem[..] test_items = {
 void save_stimuli()
 {
     string fn = stimuli_dir() + "test_items.csv";
-    println("saving test stimuli as: " + fn);
-    test_items.save(fn, "The test items: ");
+    bool force;
+
+    if (have_flag("force"))
+        force = true;
+
+    if (!file_exists(fn) || force) {
+        println("saving test stimuli as: " + fn);
+        test_items.save(fn, "The test items: ");
+    }
+    else {
+        println("Skipping \"" + fn + "\" for it already exists.");
+        println("override with --force");
+    }
 
     fn = stimuli_dir() + "prac_items.csv";
-    println("saving practice stimuli as: " + fn);
-    prac_items.save(fn, "The practice items: ");
+    if (!file_exists(fn) || force) {
+        println("saving practice stimuli as: " + fn);
+        prac_items.save(fn, "The practice items: ");
+    }
+    else {
+        println("Skipping \"" + fn + "\" for it already exists.");
+        println("override with --force");
+    }
 }
 
