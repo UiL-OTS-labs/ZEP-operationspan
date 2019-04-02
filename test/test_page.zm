@@ -222,11 +222,10 @@ Page test_page
                 int i;
                 while (i < length(text) ) {
                     c = character(text, i);
-                    if (c >= '0' && c < '9')
+                    if (c >= '0' && c <= '9')
                         output += c;
                     i++;
                 }
-                println("Changing \"" + text + "\" to \""  + output + "\"" );
                 text = output;
             }
 
