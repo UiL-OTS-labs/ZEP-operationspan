@@ -1,4 +1,4 @@
 ### The test items:  ###
 n;op1;ans1;op2;ans2;op3;ans3;op4;ans4;op5;ans5;op6;ans6;op7;ans7;op8;ans8;op9;ans9;op10;ans10
 2;1 + 2 = 3;true;1 + 2 = 6;false;;true;;true;;true;;true;;true;;true;;true;;true
-3;5 + 2 = 7;true;7 + 2 = 9;false;8 - 3 = 5;true;;true;;true;;true;;true;;true;;true;;true
+3;5 + 2 = 7;true;7 - 2 = 9;false;8 - 3 = 5;true;;true;;true;;true;;true;;true;;true;;true

@@ -89,7 +89,7 @@ TestItem[..] test_items = {
     {
         3,
         "5 + 2 = 7", true,
-        "7 + 2 = 9", false,
+        "7 - 2 = 9", false,
         "8 - 3 = 5", true,
         "", true,
         "", true,
