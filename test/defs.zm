@@ -1,26 +1,32 @@
 
 // If true shuffles the test items. This means that the number of items to
 // be recalled isn't increasing, but shuffled.
-bool SHUFFLE_TEST_ITEMS = false;
+bool SHUFFLE_TEST_ITEMS         = false;
 
 // see shuffling of test items, but then for the practice items
-bool SHUFFLE_PRAC_ITEMS = false;
+bool SHUFFLE_PRAC_ITEMS         = false;
 
 // Between the different parts in the experiment is a small grayish page
 // that is a transition between the welcome text, and the instructions,
 // the instructions and the task etc.
 //
 // You can set the duration for all those parts here.
-dur BLANK_DURATION  = 250ms;
+dur BLANK_DURATION              = 250ms;
 
 // Whether or not the participant gets feedback
-const bool DISPLAY_FEEDBACK   = false;
+const bool DISPLAY_FEEDBACK     = true;
+
+// The duration of the feedback.
+const dur  FEEDBACK_DUR         = 1s;
 
 // Whether or not the participants sees a prompt with what to do.
-const bool DISPLAY_PROMPT     = false;
+const bool DISPLAY_PROMPT       = false;
 
 // The time between the end and start of a trial.
-dur INTERTRIAL_INTERVAL = 100ms;
+dur INTER_TRIAL_INTERVAL        = 1000ms;
+
+// Inter stimulus interval
+dur INTER_STIMULUS_INTERVAL     = 250ms;
 
 // The duration that the response is active
-dur RESPONSE_DURATION = -1s;
+dur RESPONSE_DURATION           = -1s;

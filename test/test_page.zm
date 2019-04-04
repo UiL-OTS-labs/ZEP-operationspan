@@ -649,14 +649,14 @@ Page test_page
 
         on_event:finish()
         {
-            cleanup();
+            layout.reset();
             if (digit_nr < item.n)
                 // maybe use an ISI instead...
-                layout.start_stimuli(event_time + INTERTRIAL_INTERVAL);
+                layout.start_stimuli(event_time + INTER_STIMULUS_INTERVAL);
             else
                 recall_response.start_response(
                     presented_digits(),
-                    event_time + INTERTRIAL_INTERVAL
+                    event_time + INTER_STIMULUS_INTERVAL
                     );
         }
 
@@ -725,12 +725,16 @@ Page test_page
 
         on_event:start()
         {
-            layout.input.is_visible = true;
-            layout.buttons.is_visible = true;
+            layout.input.is_visible     = true;
+            layout.buttons.is_visible   = true;
         }
 
         on_event:finish()
         {
+            layout.input.is_visible     = false;
+            layout.buttons.is_visible   = false;
+            real correctness = correct ? 1.0 : -1.0;
+            test_page_overlay.start_feedback(correctness, FEEDBACK_DUR);
             done(CONTINUE);
         }
 
@@ -748,7 +752,6 @@ Page test_page
     {
         // Just in case; abort presentation if still active.
         layout.reset();
-        cleanup();
 
         signal_target(msgid);   // tell caller we're done
         target = null;
@@ -785,7 +788,6 @@ Page test_page
     void cleanup()
     {
         test_page_overlay.cleanup();
-        layout.reset();
     }
 
 
@@ -796,7 +798,7 @@ Page test_page
         item        = it;
 
         // Show this page (if not yet done) and make tref the trial start time.
-        tref = test_window1.show_test_page(this, tref + INTERTRIAL_INTERVAL);
+        tref = test_window1.show_test_page(this, tref + INTER_TRIAL_INTERVAL);
 
         // Reset response data.
         recall_response.clear();

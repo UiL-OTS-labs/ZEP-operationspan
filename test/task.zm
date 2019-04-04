@@ -79,7 +79,7 @@ Block task
     {
         on_event:entry()
         {
-            test_page.setup();
+            test_page.setup(-1, DISPLAY_FEEDBACK);
             num_cycles = prac_items.size;
         }
 
@@ -134,7 +134,7 @@ Block task
     {
         on_event:entry()
         {
-            test_page.setup();
+            test_page.setup(-1, DISPLAY_FEEDBACK);
             num_cycles = test_items.size;
         }
 
