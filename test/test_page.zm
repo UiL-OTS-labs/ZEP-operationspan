@@ -177,7 +177,7 @@ Page test_page
 				string sndfn = digit + ".wav";
 				stimulus_audio.clip.file = stimuli_dir() + "sounds/" +  sndfn;
 				stimulus_audio.playback.device = sound_output_device;
-				stimulus_audio.start();
+				stimulus_audio.start(t);
                 return stimulus_audio.expected_start_time;
             }
 		}
